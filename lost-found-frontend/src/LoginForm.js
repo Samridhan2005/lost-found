@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import './FormStyles.css';
 
 function LoginForm() {
   const [email, setEmail] = useState('');
@@ -12,15 +13,13 @@ function LoginForm() {
     try {
       const response = await fetch('http://localhost:8080/api/users/login', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
       });
 
       if (response.ok) {
         alert('Login successful!');
-        navigate('/report'); // Redirect to main item form
+        navigate('/report');
       } else {
         const errorText = await response.text();
         alert('Login failed: ' + errorText);
@@ -32,31 +31,21 @@ function LoginForm() {
   };
 
   return (
-    <div>
+    <div className="form-container">
       <h2>Login</h2>
       <form onSubmit={handleLogin}>
-        <div>
+        <div className="form-group">
           <label>Email:</label>
-          <input 
-            type="email" 
-            value={email}
-            onChange={(e) => setEmail(e.target.value)} 
-            required 
-          />
+          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
         </div>
-        <div>
+        <div className="form-group">
           <label>Password:</label>
-          <input 
-            type="password" 
-            value={password}
-            onChange={(e) => setPassword(e.target.value)} 
-            required 
-          />
+          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
         </div>
         <button type="submit">Login</button>
-        <p>
+        <div className="redirect-link">
           New user? <a href="/register">Register here</a>
-        </p>
+        </div>
       </form>
     </div>
   );

@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import './FormStyles.css';
 
 function ReportItemForm() {
   const [name, setName] = useState('');
@@ -7,7 +7,6 @@ function ReportItemForm() {
   const [description, setDescription] = useState('');
   const [location, setLocation] = useState('');
   const [dateReported, setDateReported] = useState('');
-  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,9 +22,7 @@ function ReportItemForm() {
     try {
       const response = await fetch('http://localhost:8080/items/report', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(itemData)
       });
 
@@ -41,30 +38,34 @@ function ReportItemForm() {
   };
 
   return (
-    <div className="App">
-      <h1>Lost and Found - Report Item</h1>
+    <div className="form-container">
+      <h2>Report Lost Item</h2>
       <form onSubmit={handleSubmit}>
-        <div>
+        <div className="form-group">
           <label>Item Name:</label>
-          <input type="text" value={name} onChange={(e) => setName(e.target.value)} required />
+          <input value={name} onChange={(e) => setName(e.target.value)} required />
         </div>
-        <div>
+        <div className="form-group">
           <label>Category:</label>
-          <input type="text" value={category} onChange={(e) => setCategory(e.target.value)} required />
+          <input value={category} onChange={(e) => setCategory(e.target.value)} required />
         </div>
-        <div>
+        <div className="form-group">
           <label>Description:</label>
           <textarea value={description} onChange={(e) => setDescription(e.target.value)} required />
         </div>
-        <div>
+        <div className="form-group">
           <label>Location:</label>
-          <input type="text" value={location} onChange={(e) => setLocation(e.target.value)} required />
+          <input value={location} onChange={(e) => setLocation(e.target.value)} required />
         </div>
-        <div>
+        <div className="form-group">
           <label>Date Reported:</label>
-          <input type="datetime-local" value={dateReported} onChange={(e) => setDateReported(e.target.value)} />
+          <input
+            type="datetime-local"
+            value={dateReported}
+            onChange={(e) => setDateReported(e.target.value)}
+          />
         </div>
-        <button type="submit">Report Item</button>
+        <button type="submit">Submit</button>
       </form>
     </div>
   );

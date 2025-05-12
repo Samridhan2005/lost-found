@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import './FormStyles.css';
 
 function RegisterForm() {
   const [name, setName] = useState('');
@@ -10,18 +11,11 @@ function RegisterForm() {
   const handleRegister = async (e) => {
     e.preventDefault();
 
-    const userData = {
-      name,
-      email,
-      password,
-      role: "USER"  // Include this only if your backend handles it
-    };
-
     try {
       const response = await fetch('http://localhost:8080/api/users/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(userData)
+        body: JSON.stringify({ name, email, password, role: 'USER' })
       });
 
       if (response.ok) {
@@ -31,39 +25,32 @@ function RegisterForm() {
         alert('Registration failed.');
       }
     } catch (error) {
-      console.error('Error during registration:', error);
-      alert('Something went wrong!');
+      console.error('Registration error:', error);
+      alert('Error occurred during registration.');
     }
   };
 
   return (
-    <div className="App">
+    <div className="form-container">
       <h2>Register</h2>
       <form onSubmit={handleRegister}>
-        <input
-          type="text"
-          placeholder="Full Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-        /><br />
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        /><br />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        /><br />
+        <div className="form-group">
+          <label>Name:</label>
+          <input value={name} onChange={(e) => setName(e.target.value)} required />
+        </div>
+        <div className="form-group">
+          <label>Email:</label>
+          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+        </div>
+        <div className="form-group">
+          <label>Password:</label>
+          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+        </div>
         <button type="submit">Register</button>
+        <div className="redirect-link">
+          Already have an account? <a href="/login">Login here</a>
+        </div>
       </form>
-      <p>Already have an account? <Link to="/login">Login here</Link></p>
     </div>
   );
 }
