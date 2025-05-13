@@ -6,30 +6,28 @@ import java.util.Date;
 @Document(collection = "items")
 public class Item {
 
-    // Fields for the item details
     private String name;
     private String category;
     private String description;
-    private String location; // Added field for location
-    
-    // Date field to store the reported date
-    private Date dateReported; // Added field for dateReported
+    private String location;
+    private Date dateReported;
 
-    // Default constructor
+    // 🔹 New field to store Cloudinary image URL
+    private String imageUrl;
+
     public Item() {
     }
 
-    // Constructor with fields (optional)
-    public Item(String name, String category, String description, String location, Date dateReported) {
+    public Item(String name, String category, String description, String location, Date dateReported, String imageUrl) {
         this.name = name;
         this.category = category;
         this.description = description;
         this.location = location;
         this.dateReported = dateReported;
+        this.imageUrl = imageUrl;
     }
 
     // Getters and Setters
-
     public String getName() {
         return name;
     }
@@ -68,5 +66,13 @@ public class Item {
 
     public void setDateReported(Date dateReported) {
         this.dateReported = dateReported;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }
