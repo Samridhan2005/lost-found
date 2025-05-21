@@ -3,37 +3,75 @@ import './ItemsGrid.css';
 
 function FoundItemsPage() {
   const [items, setItems] = useState([]);
+  const [filteredItems, setFilteredItems] = useState([]);
+  const [categoryFilter, setCategoryFilter] = useState('');
+  const [locationFilter, setLocationFilter] = useState('');
 
   useEffect(() => {
     const fetchFoundItems = async () => {
       try {
         const res = await fetch('http://localhost:8080/items/found');
         const data = await res.json();
-        if (Array.isArray(data)) setItems(data);
+
+        if (Array.isArray(data)) {
+          setItems(data);
+          setFilteredItems(data); // initialize with all items
+        }
       } catch (err) {
         console.error('Error fetching found items:', err);
-        setItems([]);
       }
     };
 
     fetchFoundItems();
   }, []);
 
+  useEffect(() => {
+    let filtered = items;
+
+    if (categoryFilter) {
+      filtered = filtered.filter(item =>
+        item.category?.toLowerCase() === categoryFilter.toLowerCase()
+      );
+    }
+
+    if (locationFilter) {
+      filtered = filtered.filter(item =>
+        item.location?.toLowerCase().includes(locationFilter.toLowerCase())
+      );
+    }
+
+    setFilteredItems(filtered);
+  }, [categoryFilter, locationFilter, items]);
+
   return (
-    <div className="grid-container">
+    <div className="page-container">
       <h2>Found Items</h2>
+
+      <div className="filters">
+        <select onChange={(e) => setCategoryFilter(e.target.value)} value={categoryFilter}>
+          <option value="">All Categories</option>
+          <option value="Bag">Bag</option>
+          <option value="Electronics">Electronics</option>
+          <option value="Clothing">Clothing</option>
+          {/* Add more categories if needed */}
+        </select>
+
+        <input
+          type="text"
+          placeholder="Filter by Location"
+          value={locationFilter}
+          onChange={(e) => setLocationFilter(e.target.value)}
+        />
+      </div>
+
       <div className="grid">
-        {items.map((item) => (
-          <div className="grid-item" key={item.id}>
+        {filteredItems.map((item, index) => (
+          <div className="grid-item" key={index}>
             <h3>{item.name}</h3>
             <p><strong>Category:</strong> {item.category}</p>
             <p><strong>Location:</strong> {item.location}</p>
             <p><strong>Description:</strong> {item.description}</p>
-            {item.imageUrl && (
-              <div className="image-container">
-                <img src={item.imageUrl} alt={item.name} />
-              </div>
-            )}
+            <img src={item.imageUrl} alt={item.name} className="item-image" />
           </div>
         ))}
       </div>
