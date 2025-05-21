@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface ItemRepository extends MongoRepository<Item, String> {
     List<Item> findByCategory(String category);
+    List<Item> findByType(String type); // ← Add this
+
 }

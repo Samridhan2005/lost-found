@@ -1,4 +1,3 @@
-// FoundItemsPage.js
 import React, { useEffect, useState } from 'react';
 import './ItemsGrid.css'; // ✅ Reusing the same CSS as LostItemsPage
 
@@ -7,10 +6,24 @@ function FoundItemsPage() {
   const [expandedItemId, setExpandedItemId] = useState(null);
 
   useEffect(() => {
-    fetch('http://localhost:8080/items/found')
-      .then((res) => res.json())
-      .then((data) => setItems(data))
-      .catch((err) => console.error('Error fetching found items:', err));
+    const fetchFoundItems = async () => {
+      try {
+        const res = await fetch('http://localhost:8080/items/found');
+        const data = await res.json();
+
+        if (Array.isArray(data)) {
+          setItems(data);
+        } else {
+          console.warn('Expected array but got:', data);
+          setItems([]); // Fallback to empty list
+        }
+      } catch (err) {
+        console.error('Error fetching found items:', err);
+        setItems([]);
+      }
+    };
+
+    fetchFoundItems();
   }, []);
 
   const handleViewImage = (id) => {
@@ -30,7 +43,7 @@ function FoundItemsPage() {
             <button onClick={() => handleViewImage(item.id)}>
               {expandedItemId === item.id ? 'Hide Image' : 'View Product'}
             </button>
-            {expandedItemId === item.id && (
+            {expandedItemId === item.id && item.imageUrl && (
               <div className="image-container">
                 <img src={item.imageUrl} alt={item.name} />
               </div>

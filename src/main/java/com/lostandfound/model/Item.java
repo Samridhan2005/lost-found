@@ -1,33 +1,35 @@
 package com.lostandfound.model;
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
 import java.util.Date;
 
 @Document(collection = "items")
 public class Item {
+
+    @Id
+    private String id;
 
     private String name;
     private String category;
     private String description;
     private String location;
     private Date dateReported;
-
-    // 🔹 New field to store Cloudinary image URL
     private String imageUrl;
 
-    public Item() {
+    private String type; // NEW FIELD: "lost" or "found"
+
+    // --- Getters and setters ---
+    
+    public String getId() {
+        return id;
     }
 
-    public Item(String name, String category, String description, String location, Date dateReported, String imageUrl) {
-        this.name = name;
-        this.category = category;
-        this.description = description;
-        this.location = location;
-        this.dateReported = dateReported;
-        this.imageUrl = imageUrl;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    // Getters and Setters
     public String getName() {
         return name;
     }
@@ -74,5 +76,13 @@ public class Item {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

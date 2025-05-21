@@ -1,43 +1,41 @@
-// LostItemsPage.js
 import React, { useEffect, useState } from 'react';
-import './ItemsGrid.css';
 
 function LostItemsPage() {
   const [items, setItems] = useState([]);
-  const [expandedItemId, setExpandedItemId] = useState(null);
 
   useEffect(() => {
-    fetch('http://localhost:8080/items/lost')
-      .then((res) => res.json())
-      .then((data) => setItems(data))
-      .catch((err) => console.error('Error fetching lost items:', err));
+    const fetchLostItems = async () => {
+      try {
+        const res = await fetch('http://localhost:8080/items/lost');
+        const data = await res.json();
+
+        // Check and ensure it's an array before setting state
+        if (Array.isArray(data)) {
+          setItems(data);
+        } else {
+          console.warn('Expected array but got:', data);
+          setItems([]); // fallback
+        }
+      } catch (err) {
+        console.error('Failed to fetch lost items:', err);
+        setItems([]);
+      }
+    };
+
+    fetchLostItems();
   }, []);
 
-  const handleViewImage = (id) => {
-    setExpandedItemId(expandedItemId === id ? null : id);
-  };
-
   return (
-    <div className="grid-container">
-      <h2>Lost Items</h2>
-      <div className="grid">
-        {items.map((item) => (
-          <div className="grid-item" key={item.id}>
-            <h3>{item.name}</h3>
-            <p><strong>Category:</strong> {item.category}</p>
-            <p><strong>Location:</strong> {item.location}</p>
-            <p><strong>Description:</strong> {item.description}</p>
-            <button onClick={() => handleViewImage(item.id)}>
-              {expandedItemId === item.id ? 'Hide Image' : 'View Product'}
-            </button>
-            {expandedItemId === item.id && (
-              <div className="image-container">
-                <img src={item.imageUrl} alt={item.name} />
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
+    <div className="items-grid">
+      {items.map((item, index) => (
+        <div className="item-card" key={index}>
+          <h3>{item.name}</h3>
+          <p>{item.description}</p>
+          <p>Category: {item.category}</p>
+          <p>Location: {item.location}</p>
+          <button onClick={() => window.open(item.imageUrl, '_blank')}>View Product</button>
+        </div>
+      ))}
     </div>
   );
 }

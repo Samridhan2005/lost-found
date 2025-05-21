@@ -1,6 +1,7 @@
 package com.lostandfound.controller;
 
 import com.lostandfound.model.Item;
+import com.lostandfound.repository.ItemRepository;
 import com.lostandfound.service.CloudinaryService;
 import com.lostandfound.service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,12 +25,27 @@ public class ItemController {
     @Autowired
     private CloudinaryService cloudinaryService;
 
+    @Autowired
+    private ItemRepository itemRepository; // Inject repo here
+
+    // ✅ GET /items/found
+    @GetMapping("/found")
+    public List<Item> getFoundItems() {
+        return itemRepository.findByType("found");
+    }
+
+    // ✅ GET /items/lost
+    @GetMapping("/lost")
+    public List<Item> getLostItems() {
+        return itemRepository.findByType("lost");
+    }
+
     // Helper method to convert String to Date
     private Date convertStringToDate(String dateStr) {
         if (dateStr == null || dateStr.isEmpty()) {
             return null;
         }
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); // Adjust date format if needed
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         try {
             return sdf.parse(dateStr);
         } catch (ParseException e) {
@@ -38,34 +54,34 @@ public class ItemController {
         }
     }
 
+    // POST /items/report
     @PostMapping("/report")
     public Item reportItem(
             @RequestParam("name") String name,
             @RequestParam("category") String category,
+            @RequestParam("type") String type,
             @RequestParam("description") String description,
             @RequestParam("location") String location,
             @RequestParam(value = "dateReported", required = false) String dateReported,
             @RequestParam("image") MultipartFile imageFile
     ) throws IOException {
-        // Upload image to Cloudinary and get the URL
         String imageUrl = cloudinaryService.uploadFile(imageFile);
-
-        // Convert date string to Date object
         Date reportedDate = convertStringToDate(dateReported);
 
-        // Create new Item object and populate fields
         Item item = new Item();
         item.setName(name);
         item.setCategory(category);
+        item.setType(type);
         item.setDescription(description);
         item.setLocation(location);
         item.setDateReported(reportedDate);
         item.setImageUrl(imageUrl);
 
-        // Save item to DB
         return itemService.reportItem(item);
     }
 
+
+    // GET /items
     @GetMapping
     public List<Item> getAllItems() {
         return itemService.getAllItems();
