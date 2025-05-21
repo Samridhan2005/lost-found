@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import './ItemsGrid.css';
 
 function LostItemsPage() {
   const [items, setItems] = useState([]);
@@ -8,14 +9,7 @@ function LostItemsPage() {
       try {
         const res = await fetch('http://localhost:8080/items/lost');
         const data = await res.json();
-
-        // Check and ensure it's an array before setting state
-        if (Array.isArray(data)) {
-          setItems(data);
-        } else {
-          console.warn('Expected array but got:', data);
-          setItems([]); // fallback
-        }
+        if (Array.isArray(data)) setItems(data);
       } catch (err) {
         console.error('Failed to fetch lost items:', err);
         setItems([]);
@@ -26,16 +20,23 @@ function LostItemsPage() {
   }, []);
 
   return (
-    <div className="items-grid">
-      {items.map((item, index) => (
-        <div className="item-card" key={index}>
-          <h3>{item.name}</h3>
-          <p>{item.description}</p>
-          <p>Category: {item.category}</p>
-          <p>Location: {item.location}</p>
-          <button onClick={() => window.open(item.imageUrl, '_blank')}>View Product</button>
-        </div>
-      ))}
+    <div className="grid-container">
+      <h2>Lost Items</h2>
+      <div className="grid">
+        {items.map((item) => (
+          <div className="grid-item" key={item.id}>
+            <h3>{item.name}</h3>
+            <p><strong>Category:</strong> {item.category}</p>
+            <p><strong>Location:</strong> {item.location}</p>
+            <p><strong>Description:</strong> {item.description}</p>
+            {item.imageUrl && (
+              <div className="image-container">
+                <img src={item.imageUrl} alt={item.name} />
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
