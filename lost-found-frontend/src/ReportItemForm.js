@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import './reportitemform.css'; // Assuming you have a CSS file for styling
 function ReportItemForm() {
   const [itemType, setItemType] = useState('lost'); // lost or found
   const [name, setName] = useState('');
@@ -9,15 +9,16 @@ function ReportItemForm() {
   const [dateReported, setDateReported] = useState('');
   const [imageFile, setImageFile] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [customCategory, setCustomCategory] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-
     const formData = new FormData();
     formData.append('type', itemType); // 👈 Add item type
     formData.append('name', name);
-    formData.append('category', category);
+    const finalCategory = category === "Others" ? customCategory : category;
+    formData.append('category', finalCategory);
     formData.append('description', description);
     formData.append('location', location);
     formData.append('dateReported', dateReported || new Date().toISOString());
@@ -62,7 +63,27 @@ function ReportItemForm() {
         </select>
 
         <input type="text" placeholder="Item Name" value={name} onChange={(e) => setName(e.target.value)} required />
-        <input type="text" placeholder="Category" value={category} onChange={(e) => setCategory(e.target.value)} required />
+        <select value={category} onChange={(e) => setCategory(e.target.value)} required>
+          <option value="">Select Category</option>
+          <option value="Electronics">Electronics</option>
+          <option value="Books">Books</option>
+          <option value="Clothing">Clothing</option>
+          <option value="Accessories">Accessories</option>
+          <option value="ID Cards">ID Cards</option>
+          <option value="Stationery">Stationery</option>
+          <option value="Others">Others</option>
+        </select>
+
+        {category === "Others" && (
+          <input
+            type="text"
+            placeholder="Specify the Category"
+            value={customCategory}
+            onChange={(e) => setCustomCategory(e.target.value)}
+            required
+          />
+        )}
+
         <textarea placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)} required />
         <input type="text" placeholder="Location" value={location} onChange={(e) => setLocation(e.target.value)} required />
         <input type="date" value={dateReported} onChange={(e) => setDateReported(e.target.value)} />

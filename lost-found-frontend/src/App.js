@@ -3,6 +3,9 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import RegisterForm from './RegisterForm';
 import LoginForm from './LoginForm';
 import ReportItemForm from './ReportItemForm';
+import HomePage from './HomePage'; 
+import LostItemsPage from './LostItemsPage';
+import FoundItemsPage from './FoundItemsPage';
 
 function App() {
   return (
@@ -11,7 +14,10 @@ function App() {
         <Route path="/" element={<Navigate to="/login" />} />
         <Route path="/register" element={<RegisterForm />} />
         <Route path="/login" element={<LoginForm />} />
+        <Route path="/home" element={<HomePage />} /> 
         <Route path="/report" element={<ReportItemForm />} />
+        <Route path="/lost-items" element={<LostItemsPage />} />
+        <Route path="/found-items" element={<FoundItemsPage />} />
       </Routes>
     </Router>
   );

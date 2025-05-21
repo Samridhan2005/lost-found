@@ -29,7 +29,7 @@ public class ItemController {
         if (dateStr == null || dateStr.isEmpty()) {
             return null;
         }
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm"); // Adjust date format if needed
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); // Adjust date format if needed
         try {
             return sdf.parse(dateStr);
         } catch (ParseException e) {

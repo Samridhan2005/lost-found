@@ -19,7 +19,7 @@ function LoginForm() {
 
       if (response.ok) {
         alert('Login successful!');
-        navigate('/report');
+        navigate('/home');
       } else {
         const errorText = await response.text();
         alert('Login failed: ' + errorText);
