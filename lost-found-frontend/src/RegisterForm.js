@@ -20,7 +20,7 @@ function RegisterForm() {
 
       if (response.ok) {
         alert('Registration successful!');
-        navigate('/report');
+        navigate('/home');
       } else {
         alert('Registration failed.');
       }

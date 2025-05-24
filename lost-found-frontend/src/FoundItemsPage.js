@@ -50,9 +50,13 @@ function FoundItemsPage() {
       <div className="filters">
         <select onChange={(e) => setCategoryFilter(e.target.value)} value={categoryFilter}>
           <option value="">All Categories</option>
-          <option value="Bag">Bag</option>
           <option value="Electronics">Electronics</option>
           <option value="Clothing">Clothing</option>
+          <option value="Stationery">Stationery</option>
+          <option value="Accessories">Accessories</option>
+          <option value="ID Cards">ID Cards</option>
+          <option value="Books">Books</option>
+
           {/* Add more categories if needed */}
         </select>
 
