@@ -3,6 +3,7 @@ package com.lostandfound.controller;
 import com.lostandfound.model.Item;
 import com.lostandfound.repository.ItemRepository;
 import com.lostandfound.service.CloudinaryService;
+import com.lostandfound.service.EmailService;
 import com.lostandfound.service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +27,10 @@ public class ItemController {
     private CloudinaryService cloudinaryService;
 
     @Autowired
-    private ItemRepository itemRepository; // Inject repo here
+    private ItemRepository itemRepository;
+
+    @Autowired
+    private EmailService emailService; // ✅ Inject email service
 
     // ✅ GET /items/found
     @GetMapping("/found")
@@ -40,31 +44,30 @@ public class ItemController {
         return itemRepository.findByType("lost");
     }
 
-    // Helper method to convert String to Date
+    // Helper method
     private Date convertStringToDate(String dateStr) {
-        if (dateStr == null || dateStr.isEmpty()) {
-            return null;
-        }
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        if (dateStr == null || dateStr.isEmpty()) return null;
         try {
-            return sdf.parse(dateStr);
+            return new SimpleDateFormat("yyyy-MM-dd").parse(dateStr);
         } catch (ParseException e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    // POST /items/report
+    // ✅ POST /items/report
     @PostMapping("/report")
     public Item reportItem(
-            @RequestParam("name") String name,
-            @RequestParam("category") String category,
-            @RequestParam("type") String type,
-            @RequestParam("description") String description,
-            @RequestParam("location") String location,
-            @RequestParam(value = "dateReported", required = false) String dateReported,
-            @RequestParam("image") MultipartFile imageFile
+        @RequestParam("name") String name,
+        @RequestParam("category") String category,
+        @RequestParam("type") String type,
+        @RequestParam("description") String description,
+        @RequestParam("location") String location,
+        @RequestParam("userEmail") String userEmail,
+        @RequestParam(value = "dateReported", required = false) String dateReported,
+        @RequestParam("image") MultipartFile imageFile
     ) throws IOException {
+
         String imageUrl = cloudinaryService.uploadFile(imageFile);
         Date reportedDate = convertStringToDate(dateReported);
 
@@ -76,12 +79,21 @@ public class ItemController {
         item.setLocation(location);
         item.setDateReported(reportedDate);
         item.setImageUrl(imageUrl);
+        item.setUserEmail(userEmail);
 
-        return itemService.reportItem(item);
+        Item savedItem = itemService.reportItem(item);
+
+        // ✅ Send confirmation email
+        emailService.sendSimpleEmail(
+            userEmail,
+            "Thanks for reporting a lost item",
+            "We have received your report. You'll be notified when a similar item is found."
+        );
+
+        return savedItem;
     }
 
-
-    // GET /items
+    // ✅ GET /items
     @GetMapping
     public List<Item> getAllItems() {
         return itemService.getAllItems();
