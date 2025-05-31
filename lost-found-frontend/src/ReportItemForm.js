@@ -23,6 +23,7 @@ function ReportItemForm() {
       setUserEmail(emailFromStorage);
     } else {
       alert("You are not logged in. Please log in to report an item.");
+      navigate('/login');
       // Optionally redirect to login
     }
   }, []);
