@@ -19,6 +19,7 @@ function LoginForm() {
 
       if (response.ok) {
         alert('Login successful!');
+        localStorage.setItem('userEmail', email);
         navigate('/home');
       } else {
         const errorText = await response.text();
